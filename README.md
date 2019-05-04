@@ -6,9 +6,6 @@ Intel Software Security Extensions (SGX) is a set of security-related instructio
 SGX involves encryption by the CPU of a portion of memory. The enclave is decrypted on the fly only within the CPU itself, and even then, only for code and data running from within the enclave itself.
 The processor thus protects the code from being "spied on" or examined by other code. The code and data in the enclave utilise a threat model in which the enclave is trusted but no process outside it (including the operating system itself and any hypervisor), can be trusted and these are all treated as potentially hostile. The enclave contents are unable to be read by any code outside the enclave, other than in its encrypted form.
 
-## 2. Install
-
-
 # Lab
 ## 1. Lab Overview
 
