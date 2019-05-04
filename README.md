@@ -1,4 +1,4 @@
-# Intel SGX
+# Intel® Software Guard Extensions (SGX)
 
 ## Introduction
 Intel Software Security Extensions (SGX) is a set of security-related instruction codes that are built into some modern Intel central processing units (CPUs). They allow user-level as well as operating system code to define private regions of memory, called enclaves, whose contents are protected and unable to be either read or saved by any process outside the enclave itself, including processes running at higher privilege levels. SGX is disabled by default and must be opted in to by the user through their BIOS settings on a supported system.
