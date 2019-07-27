@@ -14,7 +14,8 @@ In this lab we will use [Intel(R) Software Guard Extensions for Linux](https://g
 
 ## 3. Lab Tasks
 
-### Task 1: An enclave "Hello World" coding example.
+### Task 1: App.h
+An enclave "Hello World" coding example.
 ```c
 #ifndef _APP_H_
 #define _APP_H_
