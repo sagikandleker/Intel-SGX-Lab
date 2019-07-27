@@ -9,7 +9,7 @@ By Shlomi Domnenko, Sagi Saada, and the other one
     1. [Lab Overview](#lab-overview)
     2. [Lab Environment](#lab-environment)
     3. [Lab Tasks](#lab-tasks)
-3. [Another paragraph](#paragraph2)
+3. [Difficulties](#difficulties)
 
 # Introduction
 
@@ -376,7 +376,7 @@ Additional arguments will added to the parameter list for each proxy function an
 sgx_status_t printf_helloworld(sgx_enclave_id_t eid);
 ```
 
-### Task 4: Enclave.edl
+### Task 5: Enclave.edl
 We can verify that after compiling the whole project.
 Therefore, in order to let the Edger8r generate the corresponding proxy functions, we put our function printf_helloworld() in the trusted section of “Enclave.edl”. 
 ```c
@@ -403,3 +403,7 @@ enclave {
 
 };
 ```
+
+# Difficulties
+
+When we first met SGX it was horrible to work with. We had a lot of trouble getting everything working. Especially SGX PSW, SGX drivers, SGX SDK. Everytime we had problem ontop of another. We eventually succeeded in running the lab, by doing research on Google and visiting a lot of places.
