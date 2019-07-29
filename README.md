@@ -34,8 +34,7 @@ In this lab we will use [Intel(R) Software Guard Extensions for Linux](https://g
 Multiple files serve as enclave, trust and untrusted zones, and the application.
 
 ### Task 1: CryptoTestingApp.cpp
-
-Here, enclave initialization token is define as the “enclave.token” file and the signed enclave shared object after compilation will be “enclave.signed.so” (line 52, 53).
+Our main app that create the enclave, uses it's hidded functions and destroy it in the end.
 
 ```c
 #include <string.h>
