@@ -37,22 +37,14 @@ Multiple files serve as enclave, trust and untrusted zones, and the application.
 Our main app that create the enclave, uses it's hidded functions and destroy it in the end.
 
 ```c
-#include <string.h>
-
 #include "sgx_urts.h"
 #include "CryptoEnclave_u.h"
-
-#include "stdio.h"
-#include "stdlib.h"
-
-#include <iostream>
-#include <string>
+#include "iostream"
 using namespace std;
 
 #define BUFLEN 2048
 #define SGX_AESGCM_MAC_SIZE 16
 #define SGX_AESGCM_IV_SIZE 12 //Initialization vector 96 bits, nonce
-
 #define ENCLAVE_FILE "CryptoEnclave.signed.so"
 
 int main()
@@ -64,10 +56,6 @@ int main()
 	sgx_status_t ret;
 	sgx_launch_token_t token = { 0 };
 	int token_updated = 0;
-    
-    /* Initialize the enclave:
-    *   call sgx_create_enclave to initialize an enclave instance
-    */
 	
 	ret = sgx_create_enclave(ENCLAVE_FILE, SGX_DEBUG_FLAG, &token, &token_updated, &eid, NULL);
 	if (ret != SGX_SUCCESS)
@@ -91,14 +79,10 @@ int main()
 	size_t encMessageLen = (SGX_AESGCM_MAC_SIZE + SGX_AESGCM_IV_SIZE + strlen(message)); 
 	char *encMessage = (char *) malloc((encMessageLen+1)*sizeof(char));
 
-    /* OCall functions */
-    
-    printf("Encrypting...\n");
+	printf("Encrypting...\n");
 	ret = encryptMessage(eid, message, strlen(message), encMessage, encMessageLen);
 	encMessage[encMessageLen] = '\0';
-	printf("Encrypted message: %s\n", encMessage);
-	printf("encMessage size: %d\n", strlen(encMessage));
-	
+	printf("Encrypted message: %s\n", encMessage);	
 	
 	// The decrypted message will contain the same message as the original one.
 	char *decMessage = (char *) malloc((strlen(message)+1)*sizeof(char));
@@ -108,18 +92,17 @@ int main()
 	decMessage[strlen(message)] = '\0';
 	printf("Decrypted message: %s \n", decMessage);
 
-    /* destroy enclave */
-
 	sgx_destroy_enclave(eid);
-    
-    
+
+	return 0;
+}    
 ```
 
 As it is in the untrusted application, we must include “sgx_urts.h”, the SGX untrusted runtime system, for SGX to work correctly with the application. We also include “CryptoEnclave_u.h”, which will include all of the ECALL proxies generated from the EDL file after compilation.
 
 We didn't included all the possible error code caused by enclave operation because it's a proof of concept, but usually need to do that.
 
-The critical function here is at line 32. It calls sgx_create_enclave() function provided by urts library to officially initialize the enclave instance. The sgx_create_enclave() will performs an implicit ECALL. The implicit ECALL initiates enclave runtime initialization flow described in the Enclave Lifecycle tutorial provided by intel. The actual enclave instance shared object will be saved as “CryptoEnclave.signed.so”, which is signed by the CPU as indicated by the filename. And the enclave id will be saved in “global_eid” for future access.
+The critical function here is at line 24. It calls sgx_create_enclave() function provided by urts library to officially initialize the enclave instance. The sgx_create_enclave() will performs an implicit ECALL. The implicit ECALL initiates enclave runtime initialization flow described in the Enclave Lifecycle tutorial provided by intel. The actual enclave instance shared object will be saved as “CryptoEnclave.signed.so”, which is signed by the CPU as indicated by the filename. And the enclave id will be saved in “global_eid” for future access.
 
 In the main body of the application, we first initialize the enclave by calling sgx_create_enclave(). Then call our encryptMessage() and decryptMessage() functions, which will be discussed later.
 
@@ -127,16 +110,18 @@ Finally, we destroy the enclave instance by calling sgx_destroy_enclave() provid
 
 ### Task 2: CryptoEnclave.cpp
 Our enclave has two functions that are hidded from the outside world, decryptMessage and encryptMessage.
-for demonstating purposes, we will print the encrypted and decrypted messages from inside the enclave.
+those two functuons uses sgx ssl libraries to encrypt and decrypt our message.
 
 ```c
+#include "CryptoEnclave_t.h"
+
 #include "sgx_trts.h"
 #include "sgx_tcrypto.h"
-#include "stdlib.h"
-#include <string.h>
+#include "string.h"
+#include "stdio.h"
 
 #define BUFLEN 2048
-static sgx_aes_gcm_128bit_key_t key = { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf };
+static sgx_aes_gcm_128bit_key_t key = { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xc };
 
 void decryptMessage(char *encMessageIn, size_t len, char *decMessageOut, size_t lenOut)
 {
@@ -158,6 +143,7 @@ void encryptMessage(char *decMessageIn, size_t len, char *encMessageOut, size_t 
 {
 	uint8_t *origMessage = (uint8_t *) decMessageIn;
 	uint8_t p_dst[BUFLEN] = {0};
+	int buf_size = 100;
 
 	// Generate the IV (nonce)
 	sgx_read_rand(p_dst + SGX_AESGCM_MAC_SIZE, SGX_AESGCM_IV_SIZE);
