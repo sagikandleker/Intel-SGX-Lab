@@ -1,22 +1,14 @@
 // CryptoTestingApp.cpp : Defines the entry point for the console application.
 //
 
-#include <string.h>
-
 #include "sgx_urts.h"
 #include "CryptoEnclave_u.h"
-
-#include "stdio.h"
-#include "stdlib.h"
-
-#include <iostream>
-#include <string>
+#include "iostream"
 using namespace std;
 
 #define BUFLEN 2048
 #define SGX_AESGCM_MAC_SIZE 16
 #define SGX_AESGCM_IV_SIZE 12 //Initialization vector 96 bits, nonce
-
 #define ENCLAVE_FILE "CryptoEnclave.signed.so"
 
 int main()
@@ -54,9 +46,7 @@ int main()
 	printf("Encrypting...\n");
 	ret = encryptMessage(eid, message, strlen(message), encMessage, encMessageLen);
 	encMessage[encMessageLen] = '\0';
-	printf("Encrypted message: %s\n", encMessage);
-	printf("encMessage size: %d\n", strlen(encMessage));
-	
+	printf("Encrypted message: %s\n", encMessage);	
 	
 	// The decrypted message will contain the same message as the original one.
 	char *decMessage = (char *) malloc((strlen(message)+1)*sizeof(char));
@@ -68,6 +58,5 @@ int main()
 
 	sgx_destroy_enclave(eid);
 
-	// getchar();
 	return 0;
 }

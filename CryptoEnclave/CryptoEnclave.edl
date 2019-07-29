@@ -13,6 +13,7 @@ enclave {
         */
         public void decryptMessage([in,size=len] char *encMessageIn, size_t len, [out,size=lenOut] char *decMessageOut, size_t lenOut);
         
+        
         /*
         * This function encrypts a message.
         * @param decMessageIn

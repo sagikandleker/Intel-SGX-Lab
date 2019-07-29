@@ -2,11 +2,11 @@
 
 #include "sgx_trts.h"
 #include "sgx_tcrypto.h"
-#include "stdlib.h"
-#include <string.h>
+#include "string.h"
+#include "stdio.h"
 
 #define BUFLEN 2048
-static sgx_aes_gcm_128bit_key_t key = { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xf };
+static sgx_aes_gcm_128bit_key_t key = { 0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa, 0xb, 0xc, 0xd, 0xe, 0xc };
 
 void decryptMessage(char *encMessageIn, size_t len, char *decMessageOut, size_t lenOut)
 {
@@ -28,6 +28,7 @@ void encryptMessage(char *decMessageIn, size_t len, char *encMessageOut, size_t 
 {
 	uint8_t *origMessage = (uint8_t *) decMessageIn;
 	uint8_t p_dst[BUFLEN] = {0};
+	int buf_size = 100;
 
 	// Generate the IV (nonce)
 	sgx_read_rand(p_dst + SGX_AESGCM_MAC_SIZE, SGX_AESGCM_IV_SIZE);
