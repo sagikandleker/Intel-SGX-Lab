@@ -126,7 +126,7 @@ In the main body of the application, we first initialize the enclave by calling 
 
 Finally, we destroy the enclave instance by calling sgx_destroy_enclave() provided by urts library. It will perform the implicit ECALL that performs instructions that destry the targeted enclave.
 
-### Task 4: CryptoEnclave.cpp
+### Task 2: CryptoEnclave.cpp
 Our enclave has two functions that are hidded from the outside world, decryptMessage and encryptMessage.
 for demonstating purposes, we will print the encrypted and decrypted messages from inside the enclave.
 
@@ -174,7 +174,7 @@ void encryptMessage(char *decMessageIn, size_t len, char *encMessageOut, size_t 
 }
 ```
 
-### Task 5: CryptoEnclave.edl
+### Task 3: CryptoEnclave.edl
 We can verify that after compiling the whole project.
 Therefore, in order to let the Edger8r generate the corresponding proxy functions, we put our functions decryptMessage() and encryptMessage in the trusted section of “CryptoEnclave.edl”. 
 ```c
