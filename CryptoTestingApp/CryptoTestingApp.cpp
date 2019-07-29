@@ -66,6 +66,8 @@ int main()
 	decMessage[strlen(message)] = '\0';
 	printf("Decrypted message: %s \n", decMessage);
 
+	sgx_destroy_enclave(eid);
+
 	// getchar();
 	return 0;
 }
